@@ -1,0 +1,1233 @@
+#include<iostream.h>
+#include<conio.h>
+#include<graphics.h>
+#include<dos.h>
+#include<process.h>
+#include<ctype.h>
+#include<stdio.h>
+#include<string.h>
+#include<fstream.h>
+#include <stdlib.h>
+
+
+class Main
+{ int n,a,x,d;
+public:
+Main()
+{a=300;
+}
+Main(int n1,int x1)
+{a=300;
+n=n1;
+x=x1;
+}
+void piano();
+void opiano();
+void player();
+};
+void thank()
+{setcolor(11);
+settextstyle(4,0,9);
+outtextxy(100,50,"Thank You");
+outtextxy(100,150,"For Playing");
+outtextxy(100,250,"This Piano.");
+}
+
+//----------------------------------------------------------
+void frame()
+{//frame
+setfillstyle(2,1);
+bar(0,0,640,480);
+}
+//----------------------------------------------------------
+void record();
+//----------------------------------------------------------
+void registration(char x[])
+{//Outer body
+setcolor(9);
+setfillstyle(2,1);
+bar3d(100,100,550,240,6,1);
+//Inner body
+//Search your name(x,y)
+setcolor(3);
+setfillstyle(1,11);
+bar(250,160,535,200);
+setcolor(2);
+settextstyle(4,0,4);
+outtextxy(250,110,"Enter your name");
+
+setcolor(0);
+settextstyle(4,0,3);
+
+outtextxy(250,160,x);
+//save button
+setcolor(12);
+setfillstyle(1,4);
+bar3d(400,250,500,275,3,1);
+setcolor(1);
+settextstyle(1,0,4);
+outtextxy(420,241,"Save");
+
+
+}
+
+//----------------------------------------------------------
+union REGS i,o;
+void showmouse()
+{
+i.x.ax=1;
+int86(0x33,&i,&o);
+}
+//----------------------------------------------------------
+void getmousepos(int *button,int *x,int *y)
+{i.x.ax=3;
+int86(0x33,&i,&o);
+*button = o.x.bx;
+*x=o.x.cx;
+*y=o.x.dx;
+}
+//----------------------------------------------------------
+void viewport()
+{setviewport(105,100,getmaxx()-94,getmaxy()-95,1);
+}
+//----------------------------------------------------------
+void shift();
+void aopiano();
+void cpiano();
+//----------------------------------------------------------
+void viewport1()
+{setviewport(0,0,getmaxx(),getmaxy(),1);
+clearviewport();
+}
+//----------------------------------------------------------
+void viewport2()
+{setviewport(50,175,getmaxx()-539,getmaxy()-29,1);
+}
+//----------------------------------------------------------
+void viewport3()
+{setviewport(150,360,getmaxx()-189,getmaxy()-5,1);
+}
+//----------------------------------------------------------
+void enter()
+{
+ofstream fw;
+fw.open("name.txt");
+char array[20]={"Please click here"};
+int button,x,y,i=0;
+showmouse();
+setcolor(1);
+registration(array);
+while(1)
+{
+while(!kbhit())
+{s:
+getmousepos(&button,&x,&y);
+if(x>=250 && y>=160 && x<=535 && y<=200)
+{if(button==1)
+{button=-1;
+sound(200);
+delay(50);
+nosound();
+restorecrtmode();
+cout<<"enter your name"<<endl;
+cin>>array;
+setgraphmode(getgraphmode());
+registration(array);
+showmouse();
+sound(200);
+delay(50);
+nosound();
+goto s;
+}
+}
+
+else if(x>=400 && y>=250 && x<=500 && y<=275)
+{
+if( button==1)
+{button=-1;
+fw<<array;
+sound(200);
+delay(50);
+nosound();
+goto x;
+}
+}
+
+}
+}
+x:
+}
+void e()
+{
+viewport1();
+clearviewport();
+enter();
+}
+
+
+//----------------------------------------------------------
+void loading(int &n,int n1[4],int &j,int k)
+{ int  x=150,y=75,a=0,b=300;
+char str[50];
+setcolor(n1[j]);
+if(b-n<0)
+{n=-n;
+j++;
+if(j==4)
+j=0;
+}
+//Loading Animation
+setlinestyle(0,1,1);
+arc(x,y,a-n,b-n,30);
+arc(x,y,a-n,b-n,31);
+arc(x,y,a-n,b-n,32);
+arc(x,y,a-n,b-n,33);
+arc(x,y,a-n,b-n,34);
+//Percentage
+setcolor(3);
+settextstyle(4,0,2);
+sprintf(str,"%d%",k);
+outtextxy(130,60,str);
+}
+//----------------------------------------------------------
+void s(int i,int a[])
+{ sound(a[i]);
+delay(200);
+nosound();
+}
+//----------------------------------------------------------
+void soundo()
+{randomize();
+int i,j;
+int a[6]={100,200,300,300,400,800};
+
+for(i=0;i<=2;i++)
+{
+for(j=0;j<=5;j++)
+{
+ s(j,a);
+}
+}
+for(i=2;i>=0;i--)
+{
+for(j=5;j>=0;j--)
+{
+ s(j,a);
+}
+}
+}
+//----------------------------------------------------------
+void starting()
+{setcolor(11);
+settextstyle(4,0,9);
+outtextxy(75,30,"Welcome To");
+setcolor(14);
+outtextxy(75,150,"Digital Piano");
+}
+//----------------------------------------------------------
+void startingscreen()
+{
+int n1[4]={12,11,2,14};
+int i=0,j=0,k=0;
+char ch;
+starting();
+soundo();
+viewport3();
+delay(500);
+
+while(1)
+{
+loading(i,n1,j,k);
+delay(200);
+i=i+10;
+k++;
+clearviewport();
+while(kbhit())
+{ch=getch();
+}
+if(ch=='x')
+exit(0);
+else if(k==101)
+{sound(200);
+delay(200);
+nosound();
+viewport();
+clearviewport();
+break;
+}
+}
+}
+//----------------------------------------------------------
+void updownbutton()
+{
+setcolor(0);
+settextstyle(10,1,7);
+outtextxy(300,0,">");
+
+setcolor(0);
+settextstyle(10,1,7);
+outtextxy(300,235,"<");
+}
+//----------------------------------------------------------
+void help()
+{
+setcolor(9);
+settextstyle(1,0,7);
+outtextxy(125,0,"Help");
+setcolor(2);
+settextstyle(1,0,2);
+outtextxy(5,75,"In this DIGITAL PIANO, there are two");
+outtextxy(5,100,"types of PIANO. One is classic PIANO and");
+outtextxy(5,125,"other one is ovule PIANO.");
+outtextxy(5,150,"To save press S");
+outtextxy(5,175,"To go back press Z");
+outtextxy(5,200,"For exit press X");
+outtextxy(5,225,"For help press H");
+}
+//----------------------------------------------------------
+void about()
+{setcolor(9);
+settextstyle(1,0,7);
+outtextxy(125,0,"About");
+setcolor(2);
+settextstyle(1,0,1);
+outtextxy(5,75,"This DIGITAL PIANO designed and programmed");
+outtextxy(5,100,"By Sumit Sharma, Abid And Ibrar Khan");
+outtextxy(5,125,"contains two types of piano i.e Classic PIANO");
+outtextxy(5,150,"and Ovule PIANO. Classic PIANO is the simple");
+outtextxy(5,175,"PIANO and Ovule piano contains Ovule shaped");
+outtextxy(5,200,"animations. These animations get displayed");
+outtextxy(5,225,"on the screen when we play the PIANO.");
+}
+//----------------------------------------------------------
+void bar()
+{
+setfillstyle(1,7);
+bar(0,0,getmaxx(),getmaxy());
+updownbutton();
+}
+//----------------------------------------------------------
+void backbutton()
+{int x[4]={25,50,50,25};
+int y[4]={50,25,75,50};
+int cords[]={x[0],y[0],x[1],y[1],x[2],y[2],x[3],y[3]};
+
+setfillstyle(2,12);
+fillpoly(4,cords);
+}
+//----------------------------------------------------------
+void exitbutton()
+{
+setaspectratio(1,1);
+//Exit button
+setcolor(4);
+circle(600,30,20);
+setfillstyle(1,4);
+floodfill(600,30,4);
+
+setcolor(14);
+settextstyle(4,0,5);
+outtextxy(587,4,"X");
+}
+//----------------------------------------------------------
+void head()
+{setcolor(3);
+settextstyle(4,0,9);
+outtextxy(50,0,"Digital Piano");
+}
+//----------------------------------------------------------
+void About()
+{
+setcolor(1);
+setfillstyle(2,1);
+floodfill(5,5,1);
+rectangle(0,0,getmaxx(),getmaxy());
+setfillstyle(1,14);
+bar(5,450,635,475);
+
+//Upper roller (rectangle)
+setcolor(9);
+rectangle(100,50,550,90);
+setfillstyle(2,3);
+floodfill(101,51,9);
+
+//Elipse1(upperleft)
+setcolor(4);
+ellipse(100,70,0,360,10,20);
+setfillstyle(7,12);
+floodfill(101,71,4);
+
+//Ellipse2(upper right)
+ellipse(550,70,0,360,10,20);
+setfillstyle(7,12);
+floodfill(551,71,4);
+
+//Middle Rectangle(sheet)
+setcolor(7);
+setlinestyle(0,1,3);
+rectangle(100,93,550,387);
+setfillstyle(1,7);
+floodfill(200,100,7);
+
+//Bottom Rectangle(Bottom roller)
+setcolor(9);
+setlinestyle(0,1,1);
+rectangle(100,390,550,410);
+setfillstyle(2,3);
+floodfill(101,391,9);
+
+//Ellipse3(Bottom left)
+setcolor(4);
+ellipse(100,400,0,360,5,10);
+setfillstyle(7,12);
+floodfill(102,402,4);
+//Ellipse4(Bottom Right)
+setcolor(4);
+ellipse(550,400,0,360,5,10);
+setfillstyle(7,12);
+floodfill(552,402,4);
+
+
+backbutton();
+exitbutton();
+}
+ /*--------------------------- load function --------------------------*/
+void load()
+{
+   int gdriver = DETECT, gmode, errorcode;
+   initgraph(&gdriver, &gmode, "c:\\turboc3\\bgi");
+
+   errorcode = graphresult();
+   if (errorcode != grOk)
+   { clrscr();
+   printf("GRAPHICS ERROR: %s\n", grapherrormsg(errorcode));
+   printf(" PRESS ANY KEY TO EXIT or RESTART THE PROGRAME.");
+   getch();
+   }
+}
+//----------------------------------------------------------
+void arrow(int &x,int y[],int &n)
+{
+setcolor(14);
+settextstyle(10,0,5);
+outtextxy(x,y[n],">");
+}
+//----------------------------------------------------------
+void dialog()
+{char ch;
+sound(200);
+delay(100);
+nosound();
+setfillstyle(5,3);
+bar(75,50,500,300);
+setfillstyle(1,7);
+bar(100,75,475,275);
+setcolor(1);
+settextstyle(1,0,4);
+outtextxy(250,100,"HELP");
+setcolor(4);
+settextstyle(1,0,2);
+outtextxy(100,150,"To play the Ovule piano press");
+outtextxy(100,175,"keys 0-9 and to change the tune");
+outtextxy(100,200,"press A,B and C.To go back to the");
+outtextxy(100,225,"Ovule piano press E.To go back");
+outtextxy(100,250,"to the main menu option press Z.");
+while(1)
+{
+while(kbhit())
+{ch=getch();
+if(ch=='e')
+{
+sound(200);
+delay(100);
+nosound();
+viewport1();
+clearviewport();
+aopiano();
+
+}
+}
+}
+
+}
+//----------------------------------------------------------
+void dbox()
+{char ch;
+sound(200);
+delay(100);
+nosound();
+setfillstyle(5,3);
+bar(75,50,500,300);
+setfillstyle(1,7);
+bar(100,75,475,275);
+setcolor(1);
+settextstyle(1,0,4);
+outtextxy(250,100,"HELP");
+setcolor(4);
+settextstyle(1,0,2);
+outtextxy(100,150,"To play the Classic piano press");
+outtextxy(100,175,"keys 0-9 and to change the tune");
+outtextxy(100,200,"press A,B and C.To go back to the");
+outtextxy(100,225,"Classic piano press E.To go back");
+outtextxy(100,250,"to the main menu option press Z.");
+while(1)
+{
+while(kbhit())
+{ch=getch();
+if(ch=='e')
+{sound(200);
+delay(100);
+nosound();
+viewport1();
+clearviewport();
+cpiano();
+
+}
+}
+}
+
+}
+//----------------------------------------------------------
+void classic()
+{
+int bx[10]={75,125,175,225,275,325,375,425,475,525};
+int by[2]={250,425};
+int wx[10]={125,175,225,275,325,375,425,475,525,575};
+int wy[2]={250,475};
+int ox[2]={75,575};
+int oy[2]={200,475};
+int sf1=1;
+int sf2=1;
+int sf3=1;
+int sf4=1;
+int sf5=1;
+int sf6=1;
+int sf7=1;
+int sf8=1;
+int sf9=1;
+int sf10=1;
+
+//piano outerboundary
+setfillstyle(1,8);
+bar(ox[0],oy[0],ox[1],oy[1]);
+
+//black button 1
+setfillstyle(sf1,0);
+bar(bx[0],by[0],bx[1],by[1]);
+
+//white button 1
+setfillstyle(sf2,7);
+bar(wx[0],wy[0],wx[1],wy[1]);
+
+//black button 2
+setfillstyle(sf3,-0);
+bar(bx[2],by[0],bx[3],by[1]);
+
+//white button 2
+setfillstyle(sf4,7);
+bar(wx[2],wy[0],wx[3],wy[1]);
+
+//black button 3
+setfillstyle(sf5,0);
+bar(bx[4],by[0],bx[5],by[1]);
+
+//white button 3
+setfillstyle(sf6,7);
+bar(wx[4],wy[0],wx[5],wy[1]);
+
+//black button 4
+setfillstyle(sf7,0);
+bar(bx[6],by[0],bx[7],by[1]);
+
+//white button 4
+setfillstyle(sf8,7);
+bar(wx[6],wy[0],wx[7],wy[1]);
+
+//black button 5
+setfillstyle(sf9,0);
+bar(bx[8],by[0],bx[9],by[1]);
+
+//white button 5
+setfillstyle(sf10,7);
+bar(wx[8],wy[0],wx[9],wy[1]);
+}
+//----------------------------------------------------------
+void Main:: piano()
+{
+ofstream fw;
+fw.open("save.dat");
+
+a=300;
+x=10;
+setbkcolor(0);
+setcolor(2);
+settextstyle(4,0,9);
+outtextxy(60,0,"Classic Piano");
+setcolor(14);
+settextstyle(1,0,4);
+outtextxy(10,150,"For help press H");
+setcolor(14);
+settextstyle(1,0,4);
+outtextxy(375,150,"To save press S");
+
+while(1)
+   {
+ switch(toupper(getch()))
+	 {
+ case '1': sound(20*x);
+ delay(a);
+ nosound();
+ n=1;
+ Main ob0(n,x);
+ fw.write((char*)&ob0,sizeof(ob0));
+ break;
+ case '2': sound(40*x);
+ delay(a);
+ nosound();
+ n=2;
+ Main ob1(n,x);
+ fw.write((char*)&ob1,sizeof(ob1));
+ break;
+ case '3': sound(60*x);
+ delay(a);
+ nosound();
+ n=3;
+ Main ob2(n,x);
+ fw.write((char*)&ob2,sizeof(ob2));
+ break;
+ case '4': sound(80*x);
+ delay(a);
+ nosound();
+ n=4;
+ Main ob3(n,x);
+ fw.write((char*)&ob3,sizeof(ob3));
+ break;
+ case '5': sound(100*x);
+ delay(a);
+ nosound();
+ n=5;
+ Main ob4(n,x);
+ fw.write((char*)&ob4,sizeof(ob4));
+ break;
+ case '6': sound(120*x);
+ delay(a);
+ nosound();
+ n=6;
+ Main ob5(n,x);
+ fw.write((char*)&ob5,sizeof(ob5));
+ break;
+ case '7': sound(140*x);
+ delay(a);
+ nosound();
+ n=7;
+ Main ob6(n,x);
+ fw.write((char*)&ob6,sizeof(ob6));
+ break;
+ case '8': sound(160*x);
+ delay(a);
+ nosound();
+ n=8;
+ Main ob7(n,x);
+ fw.write((char*)&ob7,sizeof(ob7));
+ break;
+ case '9': sound(180*x);
+ delay(a);
+ nosound();
+ n=9;
+ Main ob8(n,x);
+ fw.write((char*)&ob8,sizeof(ob8));
+ break;
+ case '0': sound(200*x);
+ delay(a);
+ nosound();
+ n=0;
+ Main ob9(n,x);
+ fw.write((char*)&ob9,sizeof(ob9));
+ break;
+ case 'Z':clearviewport();
+viewport1();
+shift();
+sound(200);
+delay(100);
+nosound();
+break;
+ case 'H':
+dbox();
+sound(200);
+delay(100);
+nosound();
+break;
+ case 'A': x=1;
+ break;
+ case 'B': x=5;
+ break;
+ case 'C': x=40;
+ break;
+ case 'X':for(int x=0;x<25;x++){delay(50);fw.close();
+clearviewport();
+viewport1();
+thank();
+sound(300);
+delay(1000);
+nosound();
+printf("\n\n\n");}
+closegraph();
+exit(0);
+ }
+ }
+}
+
+
+//----------------------------------------------------------
+void menup()
+{int x[5]={150,525,500,125,150};
+int y[15]={175,175,250,250,175,275,275,350,350,275,375,375,450,450,375};
+int cords[]={x[0],y[0],x[1],y[1],x[2],y[2],x[3],y[3],x[4],y[4]};
+int cords1[]={x[0],y[5],x[1],y[6],x[2],y[7],x[3],y[8],x[4],y[9]};
+int cords2[]={x[0],y[10],x[1],y[11],x[2],y[12],x[3],y[13],x[4],y[14]};
+frame();
+setfillstyle(1,14);
+bar(0,460,639,479);
+setcolor(1);
+settextstyle(2,0,5);
+outtextxy(10,460,"To Move UP or DOWN press W or S respectively");
+outtextxy(360,460,"// To Enter any option press E");
+//classic look
+setfillstyle(1,2);
+fillpoly(5,cords);
+
+setcolor(14);
+settextstyle(4,0,6);
+outtextxy(175,180,"Classic Look");
+
+fillpoly(5,cords1);
+
+setcolor(14);
+settextstyle(4,0,6);
+outtextxy(175,280,"Ovule Look");
+
+fillpoly(5,cords2);
+
+setcolor(14);
+settextstyle(4,0,5);
+outtextxy(175,380,"Help / About");
+
+/*setfillstyle(1,3);
+bar3d(420,120,620,170,5,1);
+settextstyle(4,0,5);
+outtextxy(425,115,"Recordings");   */
+
+exitbutton();
+head();
+}
+/*-----------------------------veiwport--------------------------------*/
+void vp(int x,int tc,int bk,char *text)
+{
+
+  setcolor(tc);
+  settextstyle(2,0,6);
+  outtextxy(x,-4,text);
+  setcolor(bk);
+  rectangle(7,14,getmaxx()-7,getmaxy()-7);
+  rectangle(6,13,getmaxx()-6,getmaxy()-6);
+  setviewport(8,15,getmaxx()-8,getmaxy()-8,3);
+ }
+/*-----------------------------------------------------------------------*/
+c(a,b)
+{
+setcolor(random(16));
+setaspectratio(3,1);
+for(int i=0;i<30;i=i+1)
+circle(a,b,i);
+}
+//----------------------------------------------------------
+void Main::opiano()
+{
+ofstream fw;
+fw.open("save.dat");
+a=300;
+x=10;
+d=1;
+vp(150,13,12,"");
+setbkcolor(0);
+setcolor(12);
+settextstyle(4,0,9);
+outtextxy(60,0,"Ovule Piano");
+setcolor(14);
+settextstyle(1,0,4);
+outtextxy(180,150,"FOR HELP PRESS H");
+setcolor(14);
+settextstyle(1,0,4);
+outtextxy(180,420,"TO SAVE PRESS S");
+setcolor(4);
+line(20,400,590,400);
+line(20,401,590,401);
+line(20,402,590,402);
+
+while(1)
+   {
+ switch(toupper(getch()))
+	 {
+ case '1': sound(20*x);
+ c(40+d,300);
+ delay(a);
+ nosound();
+ n=1;
+ Main ob0(n,x);
+ fw.write((char*)&ob0,sizeof(ob0));
+ break;
+ case '2': sound(40*x);
+ c(100+d,300);
+ delay(a);
+ nosound();
+ n=2;
+ Main ob1(n,x);
+ fw.write((char*)&ob1,sizeof(ob1));
+ break;
+ case '3': sound(60*x);
+ c(160+d,300);
+ delay(a);
+ nosound();
+ n=3;
+ Main ob2(n,x);
+ fw.write((char*)&ob2,sizeof(ob2));
+ break;
+ case '4': sound(80*x);
+ c(220+d,300);
+ delay(a);
+ nosound();
+ n=4;
+ Main ob3(n,x);
+ fw.write((char*)&ob3,sizeof(ob3));
+ break;
+ case '5': sound(100*x);
+ c(280+d,300);
+ delay(a);
+ nosound();
+ n=5;
+ Main ob4(n,x);
+ fw.write((char*)&ob4,sizeof(ob4));
+ break;
+ case '6': sound(120*x);
+ c(340+d,300);
+ delay(a);
+ nosound();
+ n=6;
+ Main ob5(n,x);
+ fw.write((char*)&ob5,sizeof(ob5));
+ break;
+ case '7': sound(140*x);
+ c(400+d,300);
+ delay(a);
+ nosound();
+ n=7;
+ Main ob6(n,x);
+ fw.write((char*)&ob6,sizeof(ob6));
+ break;
+ case '8': sound(160*x);
+ c(460+d,300);
+ delay(a);
+ nosound();
+ n=8;
+ Main ob7(n,x);
+ fw.write((char*)&ob7,sizeof(ob7));
+ break;
+ case '9': sound(180*x);
+ c(520+d,300);
+ delay(a);
+ nosound();
+ n=9;
+ Main ob8(n,x);
+ fw.write((char*)&ob8,sizeof(ob8));
+ break;
+ case '0': sound(200*x);
+ c(580+d,300);
+ delay(a);
+ nosound();
+ n=0;
+ Main ob9(n,x);
+ fw.write((char*)&ob9,sizeof(ob9));
+ break;
+ case 'A': x=1;
+ break;
+ case 'B': x=5;
+ break;
+ case 'C': x=40;
+ break;
+ case 'Z':clearviewport();
+viewport1();
+shift();
+sound(200);
+delay(100);
+nosound();
+break;
+case 'H':
+dialog();
+sound(200);
+delay(100);
+nosound();
+break;
+ case 'X':for(int x=0;x<25;x++){delay(50); printf("\n\n\n");}fw.close();
+clearviewport();
+viewport1();
+thank();
+sound(300);
+delay(1000);
+nosound();
+closegraph();
+exit(0);
+	 }
+     }
+}
+//----------------------------------------------------------
+void Main::player()
+{
+if(n==1)
+{sound(20*x);
+ delay(a);
+ nosound();
+ }
+else if(n==2)
+ {sound(40*x);
+ delay(a);
+ nosound();
+ }
+else if(n==3)
+ {sound(60*x);
+ delay(a);
+ nosound();
+ }
+else if(n==4)
+ {sound(80*x);
+ delay(a);
+ nosound();
+ }
+else if(n==5)
+ {sound(100*x);
+ delay(a);
+ nosound();
+ }
+else if(n==6)
+ {sound(120*x);
+ delay(a);
+ nosound();
+ }
+else if(n==7)
+ {sound(140*x);
+ delay(a);
+ nosound();
+ }
+else if(n==8)
+ {sound(160*x);
+ delay(a);
+ nosound();
+ }
+else if(n==9)
+ {sound(180*x);
+ delay(a);
+ nosound();
+ }
+else if(n==0)
+ {sound(200*x);
+ delay(a);
+ nosound();
+ }
+}
+//----------------------------------------------------------
+void record()
+{
+Main ob;
+ifstream fr;
+fr.open("save.dat");
+while(fr.read((char*)&ob,sizeof(ob)))
+{
+ob.player();
+}
+fr.close();
+}
+
+
+//----------------------------------------------------------
+void cpiano()
+{Main ob;
+char ch;
+viewport1();
+frame();
+classic();
+ob.piano();
+}
+//----------------------------------------------------------
+void aopiano()
+{ Main ob;
+char ch;
+viewport1();
+frame();
+ob.opiano();
+}
+//----------------------------------------------------------
+void Rabout()
+{char ch;
+int x,y,button=-1;
+viewport1();
+frame();
+About();
+viewport();
+clearviewport();
+bar();
+help();
+while(1)
+{
+while(kbhit())
+{ch=getch();
+if(ch=='x')
+{
+clearviewport();
+viewport1();
+thank();
+sound(300);
+delay(1000);
+nosound();
+exit(0);
+}
+else if(ch=='w')
+{
+clearviewport();
+bar();
+help();
+sound(200);
+delay(100);
+nosound();
+}
+else if(ch=='s')
+{clearviewport();
+bar();
+about();
+sound(200);
+delay(100);
+nosound();
+}
+else if(ch=='z')
+{
+sound(200);
+delay(100);
+nosound();
+viewport1();
+shift();
+}
+
+}
+
+while(!kbhit())
+{
+getmousepos(&button,&x,&y);
+if(x>=25 && y>=25 && x<=50 && y<=75)
+{if(button==1)
+{button=-1;
+viewport1();
+clearviewport();
+sound(200);
+delay(100);
+nosound();
+shift();
+}
+}
+else if(x>=475 && y>=100 && x<=525 && y<=125)
+{
+if( button==1)
+{button=-1;
+clearviewport();
+bar();
+help();
+sound(200);
+delay(100);
+nosound();
+}
+}
+
+else if(x>=475 && y>=350 && x<=525 && y<=375)
+{if(button==1)
+{button=-1;
+clearviewport();
+bar();
+about();
+sound(200);
+delay(100);
+nosound();
+}
+}
+
+else if(x>=580 && y>=10 && x<=620 && y<=50)
+{if(button==1)
+{button=-1;
+sound(200);
+delay(100);
+nosound();
+clearviewport();
+viewport1();
+thank();
+sound(300);
+delay(1000);
+nosound();
+exit(0);
+}
+}
+}
+
+}
+}
+//----------------------------------------------------------
+void shift()
+{
+int button=-1,x,y;
+int n=0;
+char ch;
+int a=25,b[3]={0,75,175};
+
+menup();
+showmouse();
+viewport2();
+
+
+while(1)
+{
+arrow(a,b,n);
+delay(50);
+clearviewport();
+while(kbhit())
+{ch=getch();
+if(ch=='w')
+{if(n==0)
+n=2;
+n--;
+sound(200);
+delay(100);
+nosound();
+}
+else if(ch=='s')
+{ if(n==2)
+n=0;
+n++;
+sound(200);
+delay(100);
+nosound();
+
+}
+else if(ch=='x')
+{
+sound(200);
+delay(100);
+nosound();
+clearviewport();
+viewport1();
+thank();
+sound(300);
+delay(1000);
+nosound();
+exit(0);
+}
+else if(ch=='r')
+{sound(200);
+delay(100);
+nosound();
+}
+
+if(n==0)
+{if(ch=='e')
+cpiano();
+sound(200);
+delay(100);
+nosound();
+}
+else if(n==1)
+{if(ch=='e')
+aopiano();
+sound(200);
+delay(100);
+nosound();
+
+}
+else if(n==2)
+{if(ch=='e')
+Rabout();
+sound(200);
+delay(100);
+nosound();
+
+}
+}
+while(!kbhit())
+{arrow(a,b,n);
+getmousepos(&button,&x,&y);
+if(x>=150 && y>=175 && x<=500 && y<=250)
+{if(button==1)
+{button=-1;
+cpiano();
+sound(200);
+delay(100);
+nosound();
+
+}
+}
+else if(x>=150 && y>=275 && x<=500 && y<=350)
+{
+if( button==1)
+{button=-1;
+sound(200);
+delay(100);
+nosound();
+aopiano();
+}
+}
+else if(x>=150 && y>=375 && x<=500 && y<=450)
+{if(button==1)
+{button=-1;
+sound(200);
+delay(100);
+nosound();
+Rabout();
+}
+}
+else if(x>=420 && y>=120 && x<=620 && y<=170)
+{if(button==1)
+{button=-1;
+sound(200);
+delay(100);
+nosound();
+}
+}
+
+else if(x>=580 && y>=10 && x<=620 && y<=50)
+{if(button==1)
+{button=-1;
+sound(200);
+delay(100);
+nosound();
+clearviewport();
+viewport1();
+thank();
+sound(300);
+delay(1000);
+nosound();
+exit(0);
+}
+}
+}
+
+}
+}
+//----------------------------------------------------------
+
+void main()
+{
+load();
+
+startingscreen();
+viewport1();
+clearviewport();
+e();
+viewport1();
+clearviewport();
+shift();
+getch();
+closegraph();
+}
